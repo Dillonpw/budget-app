@@ -174,23 +174,23 @@ const Budget: React.FC = () => {
                 </button>
             </form>
 
-            <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[60%]">
+            <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[80%]">
                 {expenses.map((expense) => (
                     <li
                         key={expense.id}
-                        className="gap-4 border-b-4 py-1 flex justify-between items-center"
+                        className="gap-4 border-y-2 py-2 flex justify-between items-center"
                     >
-                        <span>
+                        <span className='w-1/3 max-w-[200px]'>
                             {expense.description}: ${expense.amount}
                         </span>
                         <button
-                            className="btn-edit"
+                            className="btn-edit w-1/3 max-w-[200px]"
                             onClick={() => handleEdit(expense)}
                         >
                             Edit
                         </button>
                         <button
-                            className="btn-danger"
+                            className="btn-danger w-1/3 max-w-[200px]"
                             onClick={() => deleteExpense(expense.id)}
                         >
                             Delete
