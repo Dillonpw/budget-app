@@ -109,7 +109,7 @@ const Budget: React.FC = () => {
 
     return (
         <div className="flex flex-col items-center">
-            <h1>Budget</h1>
+            <h1 className="text-4xl">Do The Math</h1>
             <form
                 className="flex flex-col items-center"
                 onSubmit={handleSubmit}
@@ -128,21 +128,27 @@ const Budget: React.FC = () => {
                     onChange={handleChange}
                     disabled={isDisabled}
                 />
-                <button className="btn" type="submit" disabled={isDisabled}>
-                    Submit
-                </button>
-                <button
-                    className="btn"
-                    type="button"
-                    onClick={handleReset}
-                    disabled={!isDisabled}
-                >
-                    Reset
-                </button>
+                <div className="p-1 justify-center">
+                    <button
+                        className="btn m-2"
+                        type="submit"
+                        disabled={isDisabled}
+                    >
+                        Submit
+                    </button>
+                    <button
+                        className="btn-danger m-2"
+                        type="button"
+                        onClick={handleReset}
+                        disabled={!isDisabled}
+                    >
+                        Reset
+                    </button>
+                </div>
             </form>
             <p>{numericValue}</p>
 
-            <h2>Expenses</h2>
+            <h2>Add Expenses</h2>
             <form
                 onSubmit={handleExpenseSubmit}
                 className="flex flex-col items-center"
@@ -164,27 +170,27 @@ const Budget: React.FC = () => {
                     required
                 />
                 <button className="btn" type="submit">
-                    {editingExpense ? 'Update' : 'Add'} Expense
+                    {editingExpense ? 'Update' : 'Add'}
                 </button>
             </form>
 
-            <ul>
+            <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[60%]">
                 {expenses.map((expense) => (
                     <li
                         key={expense.id}
-                        className="gap-2 flex justify-between items-center"
+                        className="gap-4 border-b-4 py-1 flex justify-between items-center"
                     >
                         <span>
                             {expense.description}: ${expense.amount}
                         </span>
                         <button
-                            className="btn"
+                            className="btn-edit"
                             onClick={() => handleEdit(expense)}
                         >
                             Edit
                         </button>
                         <button
-                            className="btn"
+                            className="btn-danger"
                             onClick={() => deleteExpense(expense.id)}
                         >
                             Delete
@@ -193,7 +199,7 @@ const Budget: React.FC = () => {
                 ))}
             </ul>
 
-            <h1>Remaining: ${remainder}</h1>
+            <p className="text-4xl">Remaining: ${remainder}</p>
         </div>
     );
 };
