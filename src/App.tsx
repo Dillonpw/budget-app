@@ -108,7 +108,7 @@ const Budget: React.FC = () => {
 
     return (
         <>
-            <h1 className="text-4xl">Do The Math</h1>
+            <h1 className="text-4xl m-4">Do The Math</h1>
 
             <div className="flex flex-col items-center">
                 <div className="flex items-start justify-center">
