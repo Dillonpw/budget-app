@@ -105,101 +105,107 @@ const Budget: React.FC = () => {
         setEditingExpense(expense);
     };
 
-    const numericValue = Number(inputValue);
 
     return (
-        <div className="flex flex-col items-center">
+        <>
             <h1 className="text-4xl">Do The Math</h1>
-            <form
-                className="flex flex-col items-center"
-                onSubmit={handleSubmit}
-            >
-                <label
-                    className="flex justify-center items-center"
-                    htmlFor="budget"
-                >
-                    Enter your budget:
-                </label>
-                <input
-                    className="pl-4 text-center border-2 w-[140px] border-gray-500 rounded-xl bg-gray-200"
-                    type="number"
-                    id="budget"
-                    value={inputValue}
-                    onChange={handleChange}
-                    disabled={isDisabled}
-                />
-                <div className="p-1 justify-center">
-                    <button
-                        className="btn m-2"
-                        type="submit"
-                        disabled={isDisabled}
-                    >
-                        Submit
-                    </button>
-                    <button
-                        className="btn-danger m-2"
-                        type="button"
-                        onClick={handleReset}
-                        disabled={!isDisabled}
-                    >
-                        Reset
-                    </button>
+
+            <div className="flex flex-col items-center">
+                <div className="flex items-start justify-center">
+                    <div>
+                        <form
+                            className="flex flex-col items-center"
+                            onSubmit={handleSubmit}
+                        >
+                            <label
+                                className="flex justify-center text-xl items-center"
+                                htmlFor="budget"
+                            >
+                                Enter your budget:
+                            </label>
+                            <input
+                                className="pl-4 text-center border-2 w-[140px] border-gray-500 rounded-xl bg-gray-200"
+                                type="number"
+                                id="budget"
+                                value={inputValue}
+                                onChange={handleChange}
+                                disabled={isDisabled}
+                            />
+                            <div className="p-1 justify-center">
+                                <button
+                                    className="btn m-2"
+                                    type="submit"
+                                    disabled={isDisabled}
+                                >
+                                    Submit
+                                </button>
+                                <button
+                                    className="btn-danger m-2"
+                                    type="button"
+                                    onClick={handleReset}
+                                    disabled={!isDisabled}
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <h2 className="text-xl">Add Expenses</h2>
+
+                        <form
+                            onSubmit={handleExpenseSubmit}
+                            className="flex flex-col items-center"
+                        >
+                            <input
+                                className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
+                                type="text"
+                                name="description"
+                                placeholder="Description"
+                                defaultValue={editingExpense?.description || ''}
+                                required
+                            />
+                            <input
+                                className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
+                                type="number"
+                                name="amount"
+                                placeholder="Amount"
+                                defaultValue={editingExpense?.amount || ''}
+                                required
+                            />
+                            <button className="btn" type="submit">
+                                {editingExpense ? 'Update' : 'Add'}
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </form>
-            <p>{numericValue}</p>
-
-            <h2>Add Expenses</h2>
-            <form
-                onSubmit={handleExpenseSubmit}
-                className="flex flex-col items-center"
-            >
-                <input
-                    className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    defaultValue={editingExpense?.description || ''}
-                    required
-                />
-                <input
-                    className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
-                    type="number"
-                    name="amount"
-                    placeholder="Amount"
-                    defaultValue={editingExpense?.amount || ''}
-                    required
-                />
-                <button className="btn" type="submit">
-                    {editingExpense ? 'Update' : 'Add'}
-                </button>
-            </form>
-
-            <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[80%]">
-                {expenses.map((expense) => (
-                    <li
-                        key={expense.id}
-                        className="gap-4 border-y-2 py-2 flex justify-between items-center"
-                    >
-                        <span className='w-1/3 max-w-[200px]'>
-                            {expense.description}: ${expense.amount}
-                        </span>
-                        <button
-                            className="btn-edit w-1/3 max-w-[200px]"
-                            onClick={() => handleEdit(expense)}
+                <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[80%]">
+                    {expenses.map((expense) => (
+                        <li
+                            key={expense.id}
+                            className="gap-4 border-y-2 py-2 flex justify-between items-center"
                         >
-                            Edit
-                        </button>
-                        <button
-                            className="btn-danger w-1/3 max-w-[200px]"
-                            onClick={() => deleteExpense(expense.id)}
-                        >
-                            Delete
-                        </button>
-                    </li>
-                ))}
-            </ul>
+                            <span className="w-1/3 max-w-[200px]">
+                                {expense.description}: ${expense.amount}
+                            </span>
+                            <button
+                                className="btn-edit w-1/3 max-w-[200px]"
+                                onClick={() => handleEdit(expense)}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                className="btn-danger w-1/3 max-w-[200px]"
+                                onClick={() => deleteExpense(expense.id)}
+                            >
+                                Delete
+                            </button>
+                        </li>
+                    ))}
+                </ul>
 
-            <p className="text-4xl">Remaining: ${remainder}</p>
-        </div>
+                <p className="text-4xl">Remaining: ${remainder}</p>
+            </div>
+        </>
     );
 };
