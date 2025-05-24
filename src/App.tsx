@@ -157,6 +157,8 @@ const Budget: React.FC = () => {
                                 onChange={handleChange}
                                 disabled={isDisabled}
                                 placeholder="Enter amount"
+                                step="0.01"
+                                min="0"
                             />
                         </div>
                         <div className="flex space-x-4">
@@ -201,6 +203,8 @@ const Budget: React.FC = () => {
                                 name="amount"
                                 placeholder="Amount"
                                 required
+                                step="0.01"
+                                min="0"
                             />
                         </div>
                         <button className="btn w-full" type="submit">
@@ -262,6 +266,8 @@ const Budget: React.FC = () => {
                                                 value={editForm.amount}
                                                 onChange={handleEditChange}
                                                 className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                step="0.01"
+                                                min="0"
                                             />
                                         ) : (
                                             <span className="text-gray-900">
@@ -360,6 +366,8 @@ const Budget: React.FC = () => {
                                                     value={editForm.amount}
                                                     onChange={handleEditChange}
                                                     className="w-full mt-2 px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    step="0.01"
+                                                    min="0"
                                                 />
                                             ) : (
                                                 <div className="text-sm text-gray-600">
