@@ -217,7 +217,8 @@ const Budget: React.FC = () => {
                         Expenses
                     </h2>
                 </div>
-                <div className="overflow-x-auto">
+                {/* Desktop view */}
+                <div className="hidden md:block">
                     <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
@@ -325,6 +326,97 @@ const Budget: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile view */}
+                <div className="md:hidden">
+                    {expenses.length === 0 ? (
+                        <div className="px-4 py-6 text-center text-gray-500">
+                            No expenses added yet
+                        </div>
+                    ) : (
+                        <div className="divide-y divide-gray-200">
+                            {expenses.map((expense) => (
+                                <div key={expense.id} className="p-4 space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="space-y-1 flex-1 mr-4">
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    type="text"
+                                                    name="description"
+                                                    value={editForm.description}
+                                                    onChange={handleEditChange}
+                                                    className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                            ) : (
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {expense.description}
+                                                </div>
+                                            )}
+                                            {editingId === expense.id ? (
+                                                <input
+                                                    type="number"
+                                                    name="amount"
+                                                    value={editForm.amount}
+                                                    onChange={handleEditChange}
+                                                    className="w-full mt-2 px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                />
+                                            ) : (
+                                                <div className="text-sm text-gray-600">
+                                                    ${expense.amount.toFixed(2)}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col space-y-2">
+                                            {editingId === expense.id ? (
+                                                <>
+                                                    <button
+                                                        className="text-sm text-green-600 hover:text-green-900"
+                                                        onClick={() =>
+                                                            handleEditSubmit(
+                                                                expense.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button
+                                                        className="text-sm text-gray-600 hover:text-gray-900"
+                                                        onClick={
+                                                            handleCancelEdit
+                                                        }
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        className="text-sm text-emerald-600 hover:text-emerald-900"
+                                                        onClick={() =>
+                                                            handleEdit(expense)
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="text-sm text-red-600 hover:text-red-900"
+                                                        onClick={() =>
+                                                            deleteExpense(
+                                                                expense.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
