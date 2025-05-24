@@ -2,7 +2,7 @@ import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
 export default function App() {
     return (
-        <div>
+        <div className="min-h-screen bg-gray-50">
             <Budget />
         </div>
     );
@@ -18,7 +18,14 @@ const Budget: React.FC = () => {
     const [inputValue, setInputValue] = useState<string>('');
     const [isDisabled, setIsDisabled] = useState<boolean>(false);
     const [expenses, setExpenses] = useState<Expense[]>([]);
-    const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editForm, setEditForm] = useState<{
+        description: string;
+        amount: number;
+    }>({
+        description: '',
+        amount: 0,
+    });
     const remainder =
         Number(inputValue) -
         expenses.reduce((total, expense) => total + expense.amount, 0);
@@ -92,120 +99,249 @@ const Budget: React.FC = () => {
         const description = descriptionInput.value;
         const amount = parseFloat(amountInput.value);
 
-        if (editingExpense) {
-            editExpense(editingExpense.id, description, amount);
-            setEditingExpense(null);
-        } else {
-            addExpense(description, amount);
-        }
+        addExpense(description, amount);
         form.reset();
     };
 
     const handleEdit = (expense: Expense): void => {
-        setEditingExpense(expense);
+        setEditingId(expense.id);
+        setEditForm({
+            description: expense.description,
+            amount: expense.amount,
+        });
     };
 
+    const handleCancelEdit = (): void => {
+        setEditingId(null);
+        setEditForm({ description: '', amount: 0 });
+    };
+
+    const handleEditChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const { name, value } = e.target;
+        setEditForm((prev) => ({
+            ...prev,
+            [name]: name === 'amount' ? parseFloat(value) || 0 : value,
+        }));
+    };
+
+    const handleEditSubmit = (id: number): void => {
+        editExpense(id, editForm.description, editForm.amount);
+        setEditingId(null);
+        setEditForm({ description: '', amount: 0 });
+    };
 
     return (
-        <>
-            <h1 className="text-4xl m-4">Do The Math</h1>
+        <div className="max-w-6xl mx-auto px-4 py-8">
+            <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+                your monthly budget
+            </h1>
 
-            <div className="flex flex-col items-center">
-                <div className="flex items-start justify-center">
-                    <div>
-                        <form
-                            className="flex flex-col items-center"
-                            onSubmit={handleSubmit}
-                        >
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                        Set Budget
+                    </h2>
+                    <form className="space-y-4" onSubmit={handleSubmit}>
+                        <div>
                             <label
-                                className="flex justify-center text-xl items-center"
+                                className="block text-gray-700 mb-2"
                                 htmlFor="budget"
                             >
                                 Enter your budget:
                             </label>
                             <input
-                                className="pl-4 text-center border-2 w-[140px] border-gray-500 rounded-xl bg-gray-200"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 type="number"
                                 id="budget"
                                 value={inputValue}
                                 onChange={handleChange}
                                 disabled={isDisabled}
+                                placeholder="Enter amount"
                             />
-                            <div className="p-1 justify-center">
-                                <button
-                                    className="btn m-2"
-                                    type="submit"
-                                    disabled={isDisabled}
-                                >
-                                    Submit
-                                </button>
-                                <button
-                                    className="btn-danger m-2"
-                                    type="button"
-                                    onClick={handleReset}
-                                    disabled={!isDisabled}
-                                >
-                                    Reset
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div>
-                        <h2 className="text-xl">Add Expenses</h2>
+                        </div>
+                        <div className="flex space-x-4">
+                            <button
+                                className="btn flex-1"
+                                type="submit"
+                                disabled={isDisabled}
+                            >
+                                Set Budget
+                            </button>
+                            <button
+                                className="btn-danger flex-1"
+                                type="button"
+                                onClick={handleReset}
+                                disabled={!isDisabled}
+                            >
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
-                        <form
-                            onSubmit={handleExpenseSubmit}
-                            className="flex flex-col items-center"
-                        >
+                {/* Add Expense Section */}
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                        Add Expense
+                    </h2>
+                    <form onSubmit={handleExpenseSubmit} className="space-y-4">
+                        <div>
                             <input
-                                className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 type="text"
                                 name="description"
                                 placeholder="Description"
-                                defaultValue={editingExpense?.description || ''}
                                 required
                             />
+                        </div>
+                        <div>
                             <input
-                                className="border-gray-500 rounded-xl bg-gray-200 border-2 m-1 pl-2"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 type="number"
                                 name="amount"
                                 placeholder="Amount"
-                                defaultValue={editingExpense?.amount || ''}
                                 required
                             />
-                            <button className="btn" type="submit">
-                                {editingExpense ? 'Update' : 'Add'}
-                            </button>
-                        </form>
-                    </div>
+                        </div>
+                        <button className="btn w-full" type="submit">
+                            Add Expense
+                        </button>
+                    </form>
                 </div>
-                <ul className="bg-gray-300 p-4 rounded-xl m-2 w-[80%]">
-                    {expenses.map((expense) => (
-                        <li
-                            key={expense.id}
-                            className="gap-4 border-y-2 py-2 flex justify-between items-center"
-                        >
-                            <span className="w-1/3 max-w-[200px]">
-                                {expense.description}: ${expense.amount}
-                            </span>
-                            <button
-                                className="btn-edit w-1/3 max-w-[200px]"
-                                onClick={() => handleEdit(expense)}
-                            >
-                                Edit
-                            </button>
-                            <button
-                                className="btn-danger w-1/3 max-w-[200px]"
-                                onClick={() => deleteExpense(expense.id)}
-                            >
-                                Delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-
-                <p className="text-4xl">Remaining: ${remainder}</p>
             </div>
-        </>
+
+            {/* Expenses Table */}
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="p-6 border-b border-gray-200">
+                    <h2 className="text-2xl font-semibold text-gray-700">
+                        Expenses
+                    </h2>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Description
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Amount
+                                </th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {expenses.map((expense) => (
+                                <tr
+                                    key={expense.id}
+                                    className="hover:bg-gray-50"
+                                >
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        {editingId === expense.id ? (
+                                            <input
+                                                type="text"
+                                                name="description"
+                                                value={editForm.description}
+                                                onChange={handleEditChange}
+                                                className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            />
+                                        ) : (
+                                            <span className="text-gray-900">
+                                                {expense.description}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                        {editingId === expense.id ? (
+                                            <input
+                                                type="number"
+                                                name="amount"
+                                                value={editForm.amount}
+                                                onChange={handleEditChange}
+                                                className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            />
+                                        ) : (
+                                            <span className="text-gray-900">
+                                                ${expense.amount.toFixed(2)}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        {editingId === expense.id ? (
+                                            <>
+                                                <button
+                                                    className="text-green-600 hover:text-green-900 mr-4"
+                                                    onClick={() =>
+                                                        handleEditSubmit(
+                                                            expense.id
+                                                        )
+                                                    }
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    className="text-gray-600 hover:text-gray-900"
+                                                    onClick={handleCancelEdit}
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    className="text-emerald-600 hover:text-emerald-900 mr-4"
+                                                    onClick={() =>
+                                                        handleEdit(expense)
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    className="text-red-600 hover:text-red-900"
+                                                    onClick={() =>
+                                                        deleteExpense(
+                                                            expense.id
+                                                        )
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                            {expenses.length === 0 && (
+                                <tr>
+                                    <td
+                                        colSpan={3}
+                                        className="px-6 py-4 text-center text-gray-500"
+                                    >
+                                        No expenses added yet
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
+                <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-semibold text-gray-700">
+                        Remaining Budget
+                    </h2>
+                    <p
+                        className={`text-3xl font-bold ${
+                            remainder >= 0 ? 'text-green-600' : 'text-red-600'
+                        }`}
+                    >
+                        ${remainder.toFixed(2)}
+                    </p>
+                </div>
+            </div>
+        </div>
     );
 };
